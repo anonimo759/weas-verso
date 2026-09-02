@@ -1,261 +1,394 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>💀 WEAS-VERSO 💀</title>
+<title>Weas-Verso</title>
 
-    <link rel="stylesheet"
-          href="https://pyscript.net/releases/2024.1.1/core.css">
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <script type="module"
-            src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: #111;
+        color: white;
+        font-family: Arial, sans-serif;
 
-    <style>
-        body {
-            background: #121212;
-            color: #00ff00;
-            font-family: monospace;
-            padding: 20px;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-        h1 {
-            text-shadow: 0 0 10px #00ff00;
-        }
+        text-align: center;
+    }
 
-        button, input {
-            background: #222;
-            color: #00ff00;
-            border: 1px solid #00ff00;
-            padding: 12px;
-            margin: 5px;
-            font-family: monospace;
-            font-size: 16px;
-        }
+    .box {
+        width: 90%;
+        max-width: 420px;
 
-        button {
-            cursor: pointer;
-        }
+        background: #1d1d1d;
+        padding: 30px;
 
-        button:hover {
-            background: #00ff00;
-            color: #000;
-        }
+        border-radius: 18px;
 
-        #pantalla {
-            background: #050505;
-            border: 1px solid #00ff00;
-            padding: 15px;
-            margin-top: 20px;
-            min-height: 250px;
-            white-space: pre-wrap;
-            box-shadow: 0 0 10px #00ff0033;
-        }
+        box-shadow: 0 0 25px rgba(0,0,0,0.7);
+    }
 
-        #juego {
-            margin-top: 20px;
-        }
-    </style>
+    h1 {
+        margin-top: 0;
+    }
+
+    input,
+    button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 10px;
+
+        border: none;
+        border-radius: 9px;
+
+        font-size: 16px;
+    }
+
+    input {
+        background: #292929;
+        color: white;
+        outline: none;
+    }
+
+    button {
+        background: #5865f2;
+        color: white;
+
+        font-weight: bold;
+
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #4752c4;
+    }
+
+    #noAdmin {
+        display: none;
+        background: #444;
+    }
+
+    #noAdmin:hover {
+        background: #555;
+    }
+
+    #game,
+    #adminPanel {
+        display: none;
+    }
+
+    #error {
+        color: #ff5555;
+        min-height: 20px;
+    }
+
+    .stats {
+        background: #292929;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+</style>
 </head>
 
 <body>
 
-<h1>💀 WEAS-VERSO 💀</h1>
 
-<p>👤 Nombre del jugador:</p>
+<!-- ========================= -->
+<!-- PANTALLA DE ADMIN -->
+<!-- ========================= -->
 
-<input id="nombre"
-       type="text"
-       placeholder="Escribe tu nombre">
+<div class="box" id="login">
 
-<button id="iniciar">
-    🚀 INICIAR
-</button>
+    <h1>🔐 Acceso</h1>
 
-<div id="juego" style="display: none;">
+    <p>¿Eres administrador?</p>
 
-    <h2>📟 MENÚ PRINCIPAL</h2>
+    <input
+        type="password"
+        id="password"
+        placeholder="Contraseña"
+    >
 
-    <button id="evento">
-        🎲 Evento random
+    <button onclick="entrarAdmin()">
+        🔑 ENTRAR COMO ADMIN
     </button>
 
-    <button id="hack">
-        💻 Hack falso
+    <!-- Aparece después de 2 segundos -->
+    <button id="noAdmin" onclick="entrarJugador()">
+        👤 NO SOY ADMIN
     </button>
 
-    <button id="stats">
-        ❤️ Estadísticas
-    </button>
+    <p id="error"></p>
 
-    <button id="salir">
-        🚪 Salir
+</div>
+
+
+<!-- ========================= -->
+<!-- PANEL ADMIN -->
+<!-- ========================= -->
+
+<div class="box" id="adminPanel">
+
+    <h1>👑 PANEL DE ADMIN</h1>
+
+    <p>Bienvenido, administrador 😎</p>
+
+    <div class="stats">
+        <h3>📊 Información</h3>
+
+        <p id="adminInfo">
+            Panel funcionando correctamente.
+        </p>
+    </div>
+
+    <button onclick="volver()">
+        🚪 SALIR
     </button>
 
 </div>
 
-<div id="pantalla">
-    💀 WEAS-VERSO esperando jugador...
+
+<!-- ========================= -->
+<!-- JUEGO NORMAL -->
+<!-- ========================= -->
+
+<div class="box" id="game">
+
+    <h1>🗿 WEAS-VERSO</h1>
+
+    <p>Bienvenido al Weas-Verso 💀</p>
+
+    <input
+        type="text"
+        id="playerName"
+        placeholder="Escribe tu nombre"
+    >
+
+    <button onclick="entrarJuego()">
+        ▶️ ENTRAR
+    </button>
+
+    <div id="menuJuego" style="display:none;">
+
+        <h2 id="bienvenida"></h2>
+
+        <button onclick="eventoRandom()">
+            🎲 EVENTO RANDOM
+        </button>
+
+        <button onclick="mostrarStats()">
+            📊 MIS STATS
+        </button>
+
+        <button onclick="salirJuego()">
+            🚪 SALIR
+        </button>
+
+        <p id="resultado"></p>
+
+    </div>
+
 </div>
 
 
-<script type="py">
+<script>
 
-from pyscript import document, when
-import random
+/* ================================= */
+/* CONFIGURACIÓN */
+/* ================================= */
 
-# =========================
-# VARIABLES DEL JUEGO
-# =========================
-
-vida = 100
-puntos = 0
-jugando = False
-nombre = ""
+const PASSWORD_ADMIN = "1234";
 
 
-# =========================
-# FUNCIÓN PARA ESCRIBIR
-# =========================
+/* ================================= */
+/* MOSTRAR "NO SOY ADMIN" */
+/* ================================= */
 
-def escribir(texto):
-    pantalla = document.querySelector("#pantalla")
-    pantalla.innerText = texto
+setTimeout(() => {
 
+    document.getElementById("noAdmin").style.display = "block";
 
-# =========================
-# INICIAR JUEGO
-# =========================
-
-@when("click", "#iniciar")
-def iniciar(event):
-
-    global nombre
-    global jugando
-    global vida
-    global puntos
-
-    nombre = document.querySelector("#nombre").value.strip()
-
-    if nombre == "":
-        escribir("❌ WN, pon tu nombre primero 💀")
-        return
-
-    vida = 100
-    puntos = 0
-    jugando = True
-
-    document.querySelector("#juego").style.display = "block"
-
-    escribir(
-        "╔════════════════════════════╗\n"
-        "║       💀 WEAS-VERSO 💀     ║\n"
-        "║       SYSTEM ONLINE        ║\n"
-        "╚════════════════════════════╝\n\n"
-        f"🧠 Bienvenido, {nombre}.\n\n"
-        "📟 El sistema te está observando...\n"
-        "💀 Buena suerte, la vas a necesitar."
-    )
+}, 2000);
 
 
-# =========================
-# EVENTO RANDOM
-# =========================
+/* ================================= */
+/* ENTRAR COMO ADMIN */
+/* ================================= */
 
-@when("click", "#evento")
-def evento_random(event):
+function entrarAdmin() {
 
-    global puntos
+    const password =
+        document.getElementById("password").value;
 
-    if not jugando:
-        return
-
-    evento = random.choice([
-        "👁️ Una entidad te está mirando.",
-        "💀 Apareció un weón.",
-        "🍫 Encontraste un chocolate.",
-        "🗿 No pasó absolutamente nada.",
-        "🐀 Una rata te cobra impuestos.",
-        "📡 El FBI te mandó un sticker.",
-        "🗿 El sistema decidió ignorarte.",
-        "📱 Encontraste una app.",
-        "🦆 Un pato te juzgó.",
-        "💻 El PC hizo Windows XP noises.",
-        "🌚 Miraste al vacío y el vacío te miró de vuelta."
-    ])
-
-    ganancia = random.randint(1, 20)
-
-    puntos += ganancia
-
-    escribir(
-        "🎲 EVENTO RANDOM\n\n"
-        f"{evento}\n\n"
-        f"⭐ +{ganancia} puntos\n"
-        f"⭐ Puntos totales: {puntos}"
-    )
+    const error =
+        document.getElementById("error");
 
 
-# =========================
-# HACK FALSO
-# =========================
+    if (password === PASSWORD_ADMIN) {
 
-@when("click", "#hack")
-def hack(event):
+        document.getElementById("login").style.display = "none";
 
-    if not jugando:
-        return
+        document.getElementById("adminPanel").style.display = "block";
 
-    escribir(
-        "🕵️ INICIANDO HACK...\n\n"
-        "📡 Conectando...\n"
-        "💻 Accediendo al mainframe...\n"
-        "🔓 Contraseña encontrada: 1234\n"
-        "📡 IP FALSA: 192.168.69.420\n\n"
-        "💀 FELICIDADES.\n"
-        "HICISTE ABSOLUTAMENTE NADA."
-    )
+        error.textContent = "";
+
+    } else {
+
+        error.textContent =
+            "❌ Contraseña incorrecta";
+
+    }
+
+}
 
 
-# =========================
-# ESTADÍSTICAS
-# =========================
+/* ================================= */
+/* NO SOY ADMIN */
+/* ================================= */
 
-@when("click", "#stats")
-def stats(event):
+function entrarJugador() {
 
-    if not jugando:
-        return
+    document.getElementById("login").style.display = "none";
 
-    escribir(
-        "📊 ESTADÍSTICAS\n\n"
-        f"👤 Jugador: {nombre}\n"
-        f"❤️ Vida: {vida}\n"
-        f"⭐ Puntos: {puntos}\n"
-        "🎮 Estado: JUGANDO"
-    )
+    document.getElementById("game").style.display = "block";
+
+}
 
 
-# =========================
-# SALIR
-# =========================
+/* ================================= */
+/* ENTRAR AL JUEGO */
+/* ================================= */
 
-@when("click", "#salir")
-def salir(event):
+function entrarJuego() {
 
-    global jugando
+    const nombre =
+        document.getElementById("playerName").value.trim();
 
-    jugando = False
+    if (nombre === "") {
 
-    document.querySelector("#juego").style.display = "none"
+        alert("⚠️ Escribe un nombre primero");
 
-    escribir(
-        "🚪 SESIÓN TERMINADA\n\n"
-        "📟 No puedes escapar...\n"
-        "💀 El Weas-Verso te observa.\n\n"
-        "👁️ Hasta la próxima, weón."
-    )
+        return;
+    }
+
+
+    document.getElementById("playerName").style.display = "none";
+
+    document.querySelector("#game > button").style.display = "none";
+
+    document.getElementById("menuJuego").style.display = "block";
+
+    document.getElementById("bienvenida").textContent =
+        "Hola, " + nombre + " 😎";
+
+
+    /* Guardar jugador localmente */
+
+    let jugadores =
+        JSON.parse(localStorage.getItem("jugadores")) || [];
+
+
+    jugadores.push({
+
+        nombre: nombre,
+
+        fecha: new Date().toLocaleString()
+
+    });
+
+
+    localStorage.setItem(
+        "jugadores",
+        JSON.stringify(jugadores)
+    );
+
+}
+
+
+/* ================================= */
+/* EVENTO RANDOM */
+/* ================================= */
+
+function eventoRandom() {
+
+    const eventos = [
+
+        "💀 Te cayó un piano del cielo",
+
+        "🗿 Encontraste una papa legendaria",
+
+        "🚀 Te fuiste a otra dimensión",
+
+        "🐔 Una gallina te declaró la guerra",
+
+        "💰 Encontraste 999999 monedas",
+
+        "🌋 EL VOLCÁN SE ACTIVÓ",
+
+        "🧠 Ganaste +100 IQ",
+
+        "☠️ Te tropezaste con una piedra"
+
+    ];
+
+
+    const random =
+        Math.floor(Math.random() * eventos.length);
+
+
+    document.getElementById("resultado").textContent =
+        eventos[random];
+
+}
+
+
+/* ================================= */
+/* STATS */
+/* ================================= */
+
+function mostrarStats() {
+
+    const jugadores =
+        JSON.parse(localStorage.getItem("jugadores")) || [];
+
+    alert(
+        "👥 Jugadores registrados en este dispositivo: "
+        + jugadores.length
+    );
+
+}
+
+
+/* ================================= */
+/* SALIR DEL JUEGO */
+/* ================================= */
+
+function salirJuego() {
+
+    location.reload();
+
+}
+
+
+/* ================================= */
+/* VOLVER */
+/* ================================= */
+
+function volver() {
+
+    location.reload();
+
+}
 
 </script>
 
