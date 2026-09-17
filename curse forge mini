@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>💀 WEAS-VERSO MODS</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #101114;
+    color: white;
+}
+
+/* CABECERA */
+
+header {
+    background: #191b20;
+    border-bottom: 2px solid #f16436;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f16436;
+    margin-bottom: 15px;
+}
+
+.search {
+    display: flex;
+    gap: 8px;
+}
+
+.search input {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #292c33;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.search button {
+    padding: 13px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #f16436;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* CATEGORÍAS */
+
+.categories {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-top: 14px;
+}
+
+.categories button {
+    border: none;
+    border-radius: 7px;
+    padding: 10px 15px;
+    background: #292c33;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.categories button.active {
+    background: #f16436;
+}
+
+/* CONTENIDO */
+
+main {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px;
+}
+
+.subtitle {
+    color: #aaa;
+    margin-top: -10px;
+}
+
+#contador {
+    color: #888;
+    margin: 20px 0;
+}
+
+/* MODS */
+
+.mods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 20px;
+}
+
+.mod {
+    background: #1b1e24;
+    border: 1px solid #30343c;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: .2s;
+}
+
+.mod:hover {
+    transform: translateY(-4px);
+    border-color: #f16436;
+}
+
+.mod img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    display: block;
+}
+
+.mod-content {
+    padding: 17px;
+}
+
+.mod h2 {
+    margin: 0 0 8px;
+}
+
+.descripcion {
+    color: #bbb;
+    line-height: 1.4;
+    min-height: 55px;
+}
+
+.info {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin: 14px 0;
+}
+
+.tag {
+    background: #292c33;
+    color: #ddd;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.download {
+    display: block;
+    text-align: center;
+    background: #f16436;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.download:hover {
+    filter: brightness(1.15);
+}
+
+/* SIN RESULTADOS */
+
+.no-results {
+    text-align: center;
+    color: #888;
+    font-size: 18px;
+    padding: 60px 10px;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        💀 WEAS-VERSO MODS
+    </div>
+
+    <div class="search">
+
+        <input
+            id="buscador"
+            type="text"
+            placeholder="Buscar mods..."
+        >
+
+        <button onclick="buscar()">
+            🔎 Buscar
+        </button>
+
+    </div>
+
+    <div class="categories">
+
+        <button
+            class="active"
+            onclick="filtrar('Todos', this)"
+        >
+            Todos
+        </button>
+
+        <button
+            onclick="filtrar('Minecraft', this)"
+        >
+            🟩 Minecraft
+        </button>
+
+        <button
+            onclick="filtrar('Bedrock', this)"
+        >
+            ⛏️ Bedrock
+        </button>
+
+        <button
+            onclick="filtrar('Terror', this)"
+        >
+            👻 Terror
+        </button>
+
+        <button
+            onclick="filtrar('Otros', this)"
+        >
+            📦 Otros
+        </button>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <h1>Mods y Addons</h1>
+
+    <p class="subtitle">
+        Descarga mods hechos por nuestra comunidad.
+    </p>
+
+    <div id="contador"></div>
+
+    <div
+        id="listaMods"
+        class="mods"
+    ></div>
+
+</main>
+
+
+<footer>
+    💀 WEAS-VERSO — Mini CurseForge
+</footer>
+
+
+<script>
+
+/*
+==================================================
+AQUÍ AGREGAS TUS MODS
+==================================================
+
+IMPORTANTE:
+
+Los archivos deben estar dentro de:
+
+mods/
+
+Ejemplo:
+
+mods/
+ ├── cave-dweller.mcaddon
+ ├── armas.mcaddon
+ └── zombies.mcpack
+
+El nombre de "archivo" debe coincidir EXACTAMENTE.
+==================================================
+*/
+
+
+const mods = [
+
+    {
+        nombre: "Cave Dweller",
+        categoria: "Terror",
+
+        descripcion:
+            "Un addon de terror para Minecraft Bedrock.",
+
+        imagen:
+            "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=900&q=80",
+
+        etiquetas:
+            ["Terror", "Bedrock", "Mob"],
+
+        archivo:
+            "mods/cave-dweller.mcaddon"
+    },
+
+
+    {
+        nombre: "Armas Weas-Verso",
+        categoria: "Minecraft",
+
+        descripcion:
+            "Addon con nuevas armas para tus mundos.",
+
+        imagen:
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80",
+
+        etiquetas:
+            ["Armas", "Bedrock"],
+
+        archivo:
+            "mods/armas.mcaddon"
+    },
+
+
+    {
+        nombre: "Zombie Apocalypse",
+        categoria: "Terror",
+
+        descripcion:
+            "Sobrevive a una invasión de zombies.",
+
+        imagen:
+            "https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?auto=format&fit=crop&w=900&q=80",
+
+        etiquetas:
+            ["Zombies", "Supervivencia"],
+
+        archivo:
+            "mods/zombie-apocalypse.mcpack"
+    },
+
+
+    {
+        nombre: "Mi Primer Mod",
+        categoria: "Otros",
+
+        descripcion:
+            "Un addon creado para WEAS-VERSO.",
+
+        imagen:
+            "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80",
+
+        etiquetas:
+            ["Addon", "Minecraft"],
+
+        archivo:
+            "mods/mi-mod.mcaddon"
+    }
+
+];
+
+
+/*
+==================================================
+VARIABLES
+==================================================
+*/
+
+let categoriaActual = "Todos";
+let textoBusqueda = "";
+
+
+/*
+==================================================
+MOSTRAR MODS
+==================================================
+*/
+
+function mostrarMods() {
+
+    const lista =
+        document.getElementById("listaMods");
+
+    const encontrados = mods.filter(mod => {
+
+        const texto = (
+
+            mod.nombre +
+            " " +
+            mod.descripcion +
+            " " +
+            mod.etiquetas.join(" ")
+
+        ).toLowerCase();
+
+
+        const coincideTexto =
+            texto.includes(
+                textoBusqueda.toLowerCase()
+            );
+
+
+        const coincideCategoria =
+            categoriaActual === "Todos" ||
+            mod.categoria === categoriaActual;
+
+
+        return coincideTexto &&
+               coincideCategoria;
+    });
+
+
+    document.getElementById("contador").textContent =
+        encontrados.length +
+        (
+            encontrados.length === 1
+                ? " mod encontrado"
+                : " mods encontrados"
+        );
+
+
+    if (encontrados.length === 0) {
+
+        lista.innerHTML = `
+            <div class="no-results">
+
+                💀 No encontré ningún mod.
+
+                <br><br>
+
+                Prueba con otro nombre.
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    lista.innerHTML =
+        encontrados.map(mod => `
+
+        <article class="mod">
+
+            <img
+                src="${mod.imagen}"
+                alt="${mod.nombre}"
+                onerror="
+                    this.src='https://placehold.co/900x500/292c33/ffffff?text=MOD'
+                "
+            >
+
+            <div class="mod-content">
+
+                <h2>
+                    ${mod.nombre}
+                </h2>
+
+                <div class="descripcion">
+
+                    ${mod.descripcion}
+
+                </div>
+
+
+                <div class="info">
+
+                    ${
+                        mod.etiquetas.map(tag => `
+                            <span class="tag">
+                                ${tag}
+                            </span>
+                        `).join("")
+                    }
+
+                </div>
+
+
+                <a
+                    class="download"
+                    href="${mod.archivo}"
+                    download
+                >
+                    ⬇️ DESCARGAR
+                </a>
+
+            </div>
+
+        </article>
+
+    `).join("");
+}
+
+
+/*
+==================================================
+BUSCAR
+==================================================
+*/
+
+function buscar() {
+
+    textoBusqueda =
+        document
+            .getElementById("buscador")
+            .value
+            .trim();
+
+    mostrarMods();
+}
+
+
+/*
+==================================================
+ENTER PARA BUSCAR
+==================================================
+*/
+
+document
+    .getElementById("buscador")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+                buscar();
+            }
+
+        }
+    );
+
+
+/*
+==================================================
+FILTROS
+==================================================
+*/
+
+function filtrar(nombre, boton) {
+
+    categoriaActual = nombre;
+
+    document
+        .querySelectorAll(".categories button")
+        .forEach(b => {
+
+            b.classList.remove("active");
+
+        });
+
+
+    boton.classList.add("active");
+
+    mostrarMods();
+}
+
+
+/*
+==================================================
+INICIAR PÁGINA
+==================================================
+*/
+
+mostrarMods();
+
+</script>
+
+</body>
+</html>
